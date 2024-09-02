@@ -177,8 +177,7 @@ def token_login():
     if not token:
         return jsonify({"error": "No token provided"}), 400
 
-    project_info = db.get_info()
-    project_id = project_info["project_id"]
+    project_id = os.getenv("PROJECT_ID")
 
     logger.info(f"Token: {token}")
     logger.info(f"User ID: {user_id}")
