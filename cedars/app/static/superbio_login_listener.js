@@ -27,6 +27,7 @@ window.addEventListener("message", (event) => {
             
             // Send a login confirmation message to superbio server
             window.parent.postMessage({type: 'auth', data: 'successful'}, '*');
+            await new Promise(r => setTimeout(r, 3000));
   
             // Redirect to the main page or update UI as needed
             window.location.href = '/';
