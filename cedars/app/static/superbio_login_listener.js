@@ -1,16 +1,15 @@
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 window.addEventListener("message", (event) => {
     var origin = event.origin;
-  
     if (!TRUSTED_ORIGINS.includes(origin)) {
       console.log("Event recived from invalid URL", origin, ". Halting event.");
       return ;
     }
-  
-  
     const data = JSON.parse(event.data);
     console.log("Received token:", data.access_token);
     console.log("Event type :", data.event_type);
-  
     if (data.event_type === "auth") {
         // Send the token to the backend
         fetch('/auth/token-login', {
@@ -24,13 +23,12 @@ window.addEventListener("message", (event) => {
         .then(data => {
           if (data.message) {
             console.log('Login successful:', data.message);
-            
             // Send a login confirmation message to superbio server
             window.parent.postMessage({type: 'auth', data: 'successful'}, '*');
-            await new Promise(r => setTimeout(r, 3000));
-  
-            // Redirect to the main page or update UI as needed
-            window.location.href = '/';
+            sleep(5000).then(() => {
+              // Redirect to the main page or update UI as needed
+              window.location.href = '/';
+            });
           } else {
             console.error('Login failed:', data.error);
             // Handle login failure (e.g., show an error message)
@@ -40,5 +38,4 @@ window.addEventListener("message", (event) => {
           console.error('Error:', error);
         });
     }
-    
   });
