@@ -4,6 +4,7 @@ Entrypoint for the flask application.
 import os
 import sys
 from flask import Flask, redirect, render_template
+from flask_login import current_user
 from flask_session import Session
 import logging
 from loguru import logger
@@ -69,16 +70,16 @@ def create_app(config_filename=None):
 
     @cedars_app.route('/', methods=["GET"])
     def homepage():
-        if auth.current_user.is_authenticated and auth.current_user.is_admin:
+        if current_user.is_authenticated and current_user.is_admin:
             return redirect("/stats")
-        elif auth.current_user.is_authenticated:
+        elif current_user.is_authenticated:
             return redirect("/ops/adjudicate_records")
         else:
             return render_template('index.html', **ops.db.get_info())
 
     @cedars_app.route('/about', methods=["GET"])
     def about():
-        if auth.current_user.is_authenticated:
+        if current_user.is_authenticated:
             return render_template("about.html", **ops.db.get_info())
         else:
             return render_template('index.html', **ops.db.get_info())
