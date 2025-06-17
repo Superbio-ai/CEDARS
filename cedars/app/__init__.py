@@ -52,6 +52,13 @@ def create_app(config_filename=None):
         cedars_app.config.from_object(config_filename)
 
     cedars_app.config["UPLOAD_FOLDER"] = os.path.join(cedars_app.instance_path)
+
+    cedars_app.config['SESSION_PERMANENT'] = False
+    cedars_app.config['SESSION_USE_SIGNER'] = True  # Sign the session ID cookie for security
+    cedars_app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allow cross-site cookies
+    cedars_app.config['SESSION_COOKIE_SECURE'] = True  # Required for SameSite=None
+    cedars_app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access for security
+
     metrics = GunicornInternalPrometheusMetrics(cedars_app, metrics_decorator=auth.admin_required)
     metrics.info('app_info', 'CEDARS Application', version='1.0.0')
 
