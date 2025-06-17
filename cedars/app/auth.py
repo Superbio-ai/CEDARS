@@ -218,6 +218,10 @@ def token_login():
     logger.info(f"User data: {user_data}")
     if user_data:
         username = user_data["user"].get('email')
+        db.create_project(project_name=user_data["project"].get('name'),
+                          investigator_name=user_data["user"].get('name'),
+                          project_id=project_id)
+
         existing_user = db.get_user(username)
         if not existing_user:
             # Create a new user with data from the external API
