@@ -59,6 +59,8 @@ def create_app(config_filename=None):
     cedars_app.config['SESSION_COOKIE_SECURE'] = True  # Required for SameSite=None
     cedars_app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access for security
 
+    cedars_app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 * 1024
+
     metrics = GunicornInternalPrometheusMetrics(cedars_app, metrics_decorator=auth.admin_required)
     metrics.info('app_info', 'CEDARS Application', version='1.0.0')
 

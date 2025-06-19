@@ -4,7 +4,7 @@ from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMet
 workers = 4
 threads = 4
 worker_class = 'gthread'
-timeout = 300
+timeout = 900
 bind = ':5001'
 keepalive = 5
 preload_app = False
