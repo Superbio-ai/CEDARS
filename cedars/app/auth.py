@@ -190,8 +190,8 @@ def login():
         else:
             flash('Invalid credentials.')
         return redirect(url_for('auth.login'))
-    if len(db.get_project_users()) == 0:
-        return redirect(url_for('auth.register'))
+    # if len(db.get_project_users()) == 0:
+    #     return redirect(url_for('auth.register'))
     return render_template('auth/login.html',  **db.get_info())
 
 
@@ -204,7 +204,10 @@ def token_login():
         return jsonify({"error": "No token provided"}), 400
 
     project_info = db.get_info()
-    project_id = project_info["project_id"]
+    if "project_id" in project_info:
+        project_id = project_info["project_id"]
+    else:
+        project_id = os.getenv("PROJECT_ID", None)
 
     logger.info(f"Token: {token}")
     logger.info(f"User ID: {user_id}")
@@ -216,6 +219,9 @@ def token_login():
     logger.info(f"User data: {user_data}")
     if user_data:
         username = user_data["user"].get('email')
+        db.create_project(project_name=user_data["project"].get('name'),
+                          investigator_name=user_data["user"].get('name'),
+                          project_id=project_id)
         existing_user = db.get_user(username)
         if not existing_user:
             # Create a new user with data from the external API
