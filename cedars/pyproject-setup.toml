@@ -11,6 +11,7 @@ classifiers = [
 
 dependencies = [
     "flask",
+    "flask-cors",
     "flask-caching",
     "flask-login",
     "python-dotenv",
