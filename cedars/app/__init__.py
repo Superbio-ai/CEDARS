@@ -4,6 +4,7 @@ Entrypoint for the flask application.
 import os
 import sys
 from flask import Flask, redirect, render_template
+from flask_cors import CORS
 from flask_session import Session
 import logging
 from loguru import logger
@@ -61,6 +62,7 @@ def create_app(config_filename=None):
     metrics = GunicornInternalPrometheusMetrics(cedars_app, metrics_decorator=auth.admin_required)
     metrics.info('app_info', 'CEDARS Application', version='1.0.0')
 
+    CORS(cedars_app, supports_credentials=True, origins=["https://dev.app.superbio.ai"])
     sess.init_app(cedars_app)
     rq_init_app(cedars_app)
 
