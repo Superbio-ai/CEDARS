@@ -13,7 +13,7 @@ from flask import (
     request,
     session,
     url_for,
-    jsonify
+    jsonify, make_response
 )
 from flask_login import (
     UserMixin,
@@ -233,7 +233,17 @@ def token_login():
         user = User(db.get_user(username))
         session["superbio_api_token"] = token
         login_user(user)
-        return jsonify({"message": "Login successful via external API."}), 200
+        response = make_response(jsonify({"message": "Login successful via external API."}))
+
+        response.set_cookie(
+            'session',
+            value=session.sid if hasattr(session, 'sid') else session.get('_id', ''),  # fallback
+            secure=True,
+            httponly=True,
+            samesite="None"
+        )
+
+        return response
     return jsonify({"error": "Invalid token or API error."}), 401
 
 @bp.route('/logout', methods=["GET", "POST"])
